@@ -141,22 +141,22 @@
         tg.ready();
         tg.expand();
 
-        // URL orqali kelgan argumentlarni o'qiymiz
-        const urlParams = new URLSearchParams(window.location.search);
-        const urlUserId = urlParams.get('user_id');
-        const urlAmount = urlParams.get('amount');
-        const urlPhoto = urlParams.get('photo_url'); // Botdan kelgan rasm linki
+       // URL orqali kelgan argumentlarni o'qiymiz
+const urlParams = new URLSearchParams(window.location.search);
+const urlUserId = urlParams.get('user_id');
+const urlAmount = urlParams.get('amount');
+const urlPhoto = urlParams.get('photo_url'); 
 
-        if(urlUserId) document.getElementById('user-id').innerText = urlUserId;
-        if(urlAmount) document.getElementById('payment-amount').innerText = parseInt(urlAmount).toLocaleString() + " so'm";
-        
-        // Agar rasm havolasi kelgan bo'lsa, uni ko'rsatamiz
-        if(urlPhoto) {
-            const imgTag = document.getElementById('receipt-preview');
-            imgTag.src = decodeURIComponent(urlPhoto);
-            imgTag.style.display = 'inline-block';
-            document.getElementById('img-loader').style.display = 'none';
-        }
+if(urlUserId && urlUserId !== "0") document.getElementById('user-id').innerText = urlUserId;
+if(urlAmount && urlAmount !== "0") document.getElementById('payment-amount').innerText = parseInt(urlAmount).toLocaleString() + " so'm";
+
+// Rasmni to'g'ri dekodlab ko'rsatish
+if(urlPhoto && urlPhoto !== "") {
+    const imgTag = document.getElementById('receipt-preview');
+    imgTag.src = decodeURIComponent(urlPhoto); // Kodlangan linkni ochadi
+    imgTag.style.display = 'inline-block';
+    document.getElementById('img-loader').style.display = 'none';
+}
 
         function processPayment(status) {
             const userId = document.getElementById('user-id').innerText;
