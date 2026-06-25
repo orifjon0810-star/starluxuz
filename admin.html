@@ -1,79 +1,101 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StarLux - Admin Panel</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
-        :root { --bg-color: #1a1a2e; --card-bg: #16213e; --text-color: #ffffff; --accent-color: #0f3460; --success-color: #28a745; --danger-color: #dc3545; }
-        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 15px; }
-        .header { text-align: center; padding-bottom: 15px; border-bottom: 2px solid var(--accent-color); margin-bottom: 20px; }
-        .card { background-color: var(--card-bg); border-radius: 12px; padding: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); border: 1px solid #2d4059; }
-        .info-row { margin: 10px 0; font-size: 15px; display: flex; justify-content: space-between; border-bottom: 1px dashed #2d4059; padding-bottom: 6px; }
-        .info-value { font-weight: bold; color: #00fff0; }
-        .btn-group { display: flex; gap: 10px; margin-top: 20px; }
-        button { flex: 1; padding: 14px; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; color: white; }
-        .btn-success { background-color: var(--success-color); }
-        .btn-danger { background-color: var(--danger-color); }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StarLux Admin Panel</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    body { font-family: sans-serif; background: #0a0a1a; color: #e8d5a3; padding: 20px; text-align: center; }
+    .card { background: #1a1f5e; padding: 20px; border-radius: 16px; border: 1px solid #3a4090; display: inline-block; width: 100%; max-width: 400px; text-align: left; }
+    h2 { color: #c9a84c; text-align: center; margin-bottom: 20px; }
+    .info-row { margin-bottom: 12px; font-size: 16px; }
+    .info-row span { color: #fff; font-weight: bold; }
+    .btn-group { display: flex; gap: 10px; margin-top: 20px; }
+    button { flex: 1; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+    .btn-allow { background: #27ae60; color: white; }
+    .btn-deny { background: #e74c3c; color: white; }
+    .receipt-img { width: 100%; border-radius: 8px; margin-top: 15px; border: 2px solid #3a4090; display: none; }
+    .no-data { text-align: center; color: #ff9f43; font-style: italic; }
+  </style>
 </head>
 <body>
 
-    <div class="header">
-        <h2>⚙️ StarLux Admin Panel</h2>
+  <div class="card">
+    <h2>⚙️ StarLux Admin Panel</h2>
+    
+    <div id="data-container">
+      <div class="info-row">Foydalanuvchi ID: <span id="adm-user-id">0</span></div>
+      <div class="info-row">Summa: <span id="adm-amount">0 so'm</span></div>
+      
+      <p style="margin-top: 15px; font-size: 13px; color: #a0a5d0;">🧾 Kelib tushgan chek surati:</p>
+      <div id="img-status" style="color:#aaa; font-size:14px; margin-top:5px;">Rasm yuklanmoqda...</div>
+      <img id="adm-receipt" class="receipt-img" alt="Chek rasmi" />
+      
+      <div class="btn-group">
+        <button class="btn-allow" onclick="actionAllow()">✅ Ruxsat berish (+)</button>
+        <button class="btn-deny" onclick="actionDeny()">❌ Rad etish</button>
+      </div>
     </div>
-
-    <div class="card">
-        <div style="font-weight: bold; color: #ffde7d; margin-bottom: 15px;">💳 Kelib tushgan so'rov:</div>
-        
-        <div class="info-row">
-            <span>Foydalanuvchi ID:</span>
-            <span class="info-value" id="user-id">-</span>
-        </div>
-        <div class="info-row">
-            <span>Telegram Username:</span>
-            <span class="info-value" style="color: #ffde7d;" id="user-username">@</span>
-        </div>
-        <div class="info-row">
-            <span>Tasdiqlanadigan Summa:</span>
-            <span class="info-value" style="color: #28a745;" id="payment-amount">0 so'm</span>
-        </div>
-
-        <div class="btn-group">
-            <button class="btn-success" onclick="processPayment('ok')">✅ Ruxsat berish (+)</button>
-            <button class="btn-danger" onclick="processPayment('no')">❌ Rad etish</button>
-        </div>
+    
+    <div id="no-data-msg" class="no-data" style="display: none;">
+      📭 Hozircha yangi to'lov so'rovlari mavjud emas yoki panel toza ochilgan.
     </div>
+  </div>
 
-    <script>
-        const tg = window.Telegram.WebApp;
-        tg.ready(); tg.expand();
+<script>
+  const tg = window.Telegram.WebApp;
+  tg.ready();
+  tg.expand();
 
-        const urlParams = new URLSearchParams(window.location.search);
-        const urlUserId = urlParams.get('user_id');
-        const urlUsername = urlParams.get('username');
-        const urlAmount = urlParams.get('amount');
+  const BOT_TOKEN = "8643227637:AAFyXYCd6Q_nmErLsNB64HCwDsxm6BnmS80";
 
-        if(urlUserId) document.getElementById('user-id').innerText = urlUserId;
-        if(urlUsername) document.getElementById('user-username').innerText = decodeURIComponent(urlUsername);
-        if(urlAmount) document.getElementById('payment-amount').innerText = parseInt(urlAmount).toLocaleString() + " so'm";
+  // URL parametrlarni o'qib olish
+  const urlParams = new URLSearchParams(window.location.search);
+  const userId = urlParams.get('user_id') || '0';
+  const amount = urlParams.get('amount') || '0';
+  const fileId = urlParams.get('file_id') || '';
 
-        function processPayment(status) {
-            const userId = document.getElementById('user-id').innerText;
-            const amountRaw = document.getElementById('payment-amount').innerText;
-            const amount = amountRaw.replace(/[^0-9]/g, '');
-
-            const resultData = {
-                action: "admin_decision",
-                status: status,
-                user_id: parseInt(userId),
-                amount: parseInt(amount)
-            };
-
-            tg.sendData(JSON.stringify(resultData));
-            tg.close();
+  if(userId === '0' && amount === '0') {
+    document.getElementById('data-container').style.display = 'none';
+    document.getElementById('no-data-msg').style.display = 'block';
+  } else {
+    document.getElementById('adm-user-id').textContent = userId;
+    document.getElementById('adm-amount').textContent = parseInt(amount).toLocaleString() + " so'm";
+    
+    // Telegram file_id orqali haqiqiy rasm linkini aniqlash va ko'rsatsh
+    if(fileId) {
+      fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getFile?file_id=${fileId}`)
+      .then(res => res.json())
+      .then(resData => {
+        if(resData.ok) {
+          const filePath = resData.result.file_path;
+          const fullImgUrl = `https://api.telegram.org/file/bot${BOT_TOKEN}/${filePath}`;
+          const imgEl = document.getElementById('adm-receipt');
+          imgEl.src = fullImgUrl;
+          imgEl.style.display = 'block';
+          document.getElementById('img-status').style.display = 'none';
+        } else {
+          document.getElementById('img-status').textContent = "⚠️ Rasmni yuklab bo'lmadi.";
         }
-    </script>
+      })
+      .catch(() => {
+        document.getElementById('img-status').textContent = "⚠️ Tarmoq xatosi tufayli rasm yuklanmadi.";
+      });
+    } else {
+      document.getElementById('img-status').textContent = "❌ Chek rasmi mavjud emas.";
+    }
+  }
+
+  function actionAllow() {
+    tg.sendData(`/plus ${userId} ${amount}`);
+    tg.close();
+  }
+
+  function actionDeny() {
+    alert("To'lov so'rovi rad etildi.");
+    tg.close();
+  }
+</script>
 </body>
 </html>
