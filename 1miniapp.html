@@ -164,6 +164,7 @@
     }
     .modal-price { font-size: 26px; font-weight: 900; color: var(--accent2); margin-bottom: 6px; }
     .modal-desc { font-size: 13px; color: var(--text); opacity: 0.8; margin-bottom: 16px; line-height: 1.5; }
+    .modal-recipient-label { font-size: 13px; color: var(--text); margin-bottom: 8px; font-weight: 600; }
     .modal-balance {
       background: var(--price-bg); border-radius: 12px;
       padding: 12px 16px; margin-bottom: 14px; font-size: 14px; color: var(--text);
@@ -235,7 +236,7 @@
   </style>
 </head>
 <body>
-
+ 
 <div class="topbar">
   <div class="user-info">
     <div class="avatar" id="avatar">?</div>
@@ -246,22 +247,22 @@
     <span>🪙</span>
   </div>
 </div>
-
+ 
 <div class="header">
   <div class="logo">LuxStarUz</div>
   <button class="theme-toggle" onclick="toggleTheme()">🌙☀️</button>
 </div>
-
+ 
 <div class="nav">
   <button class="nav-btn active" id="nav-menu" onclick="showPage('menu')">Menyu</button>
   <button class="nav-btn" id="nav-promo" onclick="showPage('promo')">Promo kod</button>
   <button class="nav-btn" id="nav-topup" onclick="showPage('topup')">Hisobni to'ldirish</button>
 </div>
-
+ 
 <div class="page active" id="page-menu">
   <div class="products-grid" id="products-grid"></div>
 </div>
-
+ 
 <div class="page" id="page-promo">
   <div class="promo-box">
     <div class="promo-text">Promo kod olish<br>hozircha imkonsiz</div>
@@ -272,7 +273,7 @@
     <button class="promo-apply-btn" onclick="applyPromo()">Tasdiqlash</button>
   </div>
 </div>
-
+ 
 <div class="page" id="page-topup">
   <div class="topup-card-wrap">
     <div class="bank-card">
@@ -297,7 +298,7 @@
     </div>
   </div>
 </div>
-
+ 
 <div class="modal-overlay" id="modal">
   <div class="modal">
     <div class="modal-header">
@@ -307,12 +308,16 @@
     <div class="modal-img-placeholder"><span id="modal-emoji"></span></div>
     <div class="modal-price" id="modal-price"></div>
     <div class="modal-desc" id="modal-desc"></div>
+ 
+    <div class="modal-recipient-label">🎁 Kimga? (@username yoki Telegram ID kiriting)</div>
+    <input class="amount-input" id="recipient-input" type="text" placeholder="@username yoki Telegram ID" />
+ 
     <div class="modal-balance">Balansingiz: <span id="modal-balance-show">0</span> so'm</div>
     <button class="modal-buy-btn" onclick="buyProduct()">🛒 Xarid qilish</button>
     <button class="modal-cancel-btn" onclick="closeModal()">Bekor qilish</button>
   </div>
 </div>
-
+ 
 <div class="topup-confirm" id="topup-confirm">
   <div class="topup-confirm-box">
     <div class="confirm-title">💳 To'lov ma'lumotlari</div>
@@ -331,31 +336,31 @@
         <span class="val" id="confirm-code">LUX-000</span>
       </div>
     </div>
-
+ 
     <div class="upload-area" id="upload-area" onclick="document.getElementById('file-input').click()">
       <div class="upload-icon">📸</div>
       <div class="upload-text" id="upload-text-content">Chek rasmini tanlang<br><span>Bosing yoki suring</span></div>
     </div>
     <input type="file" id="file-input" accept="image/*" onchange="handleFile(this)" />
     <img id="preview-img" class="preview-img" style="display:none;" />
-
+ 
     <button class="send-check-btn" id="send-check-btn" onclick="sendCheck()" disabled>
       📤 Chekni yuborish
     </button>
     <button class="cancel-btn2" onclick="closeTopupConfirm()">Bekor qilish</button>
   </div>
 </div>
-
+ 
 <div class="toast" id="toast"></div>
-
+ 
 <script>
 const BOT_TOKEN = "8643227637:AAFyXYCd6Q_nmErLsNB64HCwDsxm6BnmS80";       
 const ADMIN_CHAT_ID = "8644777926";   
-
+ 
 const tg = window.Telegram.WebApp;
 tg.ready();
 tg.expand();
-
+ 
 const urlParams = new URLSearchParams(window.location.search);
 let lang = urlParams.get('lang') || 'uz';
 let balance = parseInt(urlParams.get('balance') || '0');
@@ -364,22 +369,22 @@ let selectedFile = null;
 let selectedProduct = null;
 let topupAmount = 0;
 let isDark = true;
-
+ 
 const PRODUCTS = [
   { key: "premium3", name: "3 Oylik Obuna", price: 180000, emoji: "💎", desc: "Telegram Premium 3 oylik obuna!" },
   { key: "premium6", name: "6 Oylik Obuna", price: 230000, emoji: "💎", desc: "Telegram Premium 6 oylik obuna!" },
   { key: "premium12", name: "1 Yillik Obuna", price: 410000, emoji: "💎", desc: "Telegram Premium 1 yillik obuna!" },
   { key: "stars1", name: "1 Stars", price: 250, emoji: "⭐", desc: "1 dona Telegram Stars!" },
 ];
-
+ 
 const avatarColors = ['#e74c3c','#e67e22','#27ae60','#2980b9','#8e44ad','#16a085','#c0392b','#d35400'];
-
+ 
 function getAvatarColor(name) {
   let hash = 0;
   for (let c of (name||'U')) hash = c.charCodeAt(0) + hash * 31;
   return avatarColors[Math.abs(hash) % avatarColors.length];
 }
-
+ 
 function initUser() {
   const user = tg.initDataUnsafe?.user;
   const name = user?.first_name || 'Foydalanuvchi';
@@ -392,7 +397,7 @@ function initUser() {
   document.getElementById('balance-display').textContent = balance.toLocaleString();
   document.getElementById('modal-balance-show').textContent = balance.toLocaleString();
 }
-
+ 
 function renderProducts() {
   const grid = document.getElementById('products-grid');
   grid.innerHTML = PRODUCTS.map(p => `
@@ -402,14 +407,14 @@ function renderProducts() {
       <div class="product-price">${p.price.toLocaleString()} so'm</div>
     </div>`).join('');
 }
-
+ 
 function showPage(page) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('page-' + page).classList.add('active');
   document.getElementById('nav-' + page).classList.add('active');
 }
-
+ 
 function openModal(product) {
   selectedProduct = product;
   document.getElementById('modal-name').textContent = product.name;
@@ -417,44 +422,60 @@ function openModal(product) {
   document.getElementById('modal-price').textContent = product.price.toLocaleString() + " so'm";
   document.getElementById('modal-desc').textContent = product.desc;
   document.getElementById('modal-balance-show').textContent = balance.toLocaleString();
+  document.getElementById('recipient-input').value = ''; // har safar tozalanadi
   document.getElementById('modal').classList.add('active');
 }
-
+ 
 function closeModal() { document.getElementById('modal').classList.remove('active'); }
-
+ 
 function buyProduct() {
   if (!selectedProduct) return;
+ 
+  const recipient = document.getElementById('recipient-input').value.trim();
+  if (!recipient) {
+    showToast("❗ Kimga yuborilishini kiriting (@username yoki ID)!");
+    return;
+  }
+ 
   if (balance < selectedProduct.price) {
     showToast("❗ Balans yetarli emas! Hisobni to'ldiring.");
     closeModal();
     showPage('topup');
     return;
   }
-  
+ 
   showToast("⏳ Buyurtma qayta ishlanmoqda...");
-  
-  // Bot interfeysiga ma'lumot uzatish
+ 
+  // Bot interfeysiga ma'lumot uzatish.
+  // ESLATMA: bu funksiya faqat WebApp pastdagi ReplyKeyboard tugmasi orqali
+  // ochilgan bo'lsa ishlaydi (inline/menu tugma orqali ochilsa, bot bu
+  // ma'lumotni hech qachon olmaydi).
   tg.sendData(JSON.stringify({
     action: 'buy',
     product: selectedProduct.key,
     name: selectedProduct.name,
     price: selectedProduct.price,
-    user_id: userId
+    recipient: recipient
   }));
-  
+ 
+  // Lokal balansni ham darhol yangilab qo'yamiz (vizual feedback uchun;
+  // haqiqiy balans bot tomonida saqlanadi)
+  balance -= selectedProduct.price;
+  document.getElementById('balance-display').textContent = balance.toLocaleString();
+ 
   closeModal();
   showToast('✅ Buyurtma yuborildi!');
 }
-
+ 
 function setAmount(val) { document.getElementById('amount-input').value = val; }
-
+ 
 function generateCode() {
   const now = new Date();
   const mm = String(now.getMinutes()).padStart(2,'0');
   const ss = String(now.getSeconds()).padStart(2,'0');
   return `LUX-${userId || '00000'}-${mm}${ss}`;
 }
-
+ 
 function showTopupConfirm() {
   const val = document.getElementById('amount-input').value;
   if (!val || val <= 0) { showToast("Summani kiriting!"); return; }
@@ -472,9 +493,9 @@ function showTopupConfirm() {
   uploadArea.innerHTML = '<div class="upload-icon">📸</div><div class="upload-text" id="upload-text-content">Chek rasmini tanlang<br><span>Bosing yoki suring</span></div>';
   document.getElementById('send-check-btn').disabled = true;
 }
-
+ 
 function closeTopupConfirm() { document.getElementById('topup-confirm').classList.remove('active'); }
-
+ 
 function handleFile(input) {
   const file = input.files[0];
   if (!file) return;
@@ -492,19 +513,19 @@ function handleFile(input) {
   };
   reader.readAsDataURL(file);
 }
-
+ 
 function sendCheck() {
   if (!selectedFile) { showToast("Chek rasmini tanlang!"); return; }
   const code = document.getElementById('confirm-code').textContent;
   
   showToast("⏳ Chek yuborilmoqda...");
   document.getElementById('send-check-btn').disabled = true;
-
+ 
   const formData = new FormData();
   formData.append("chat_id", ADMIN_CHAT_ID);
   formData.append("photo", selectedFile);
   formData.append("caption", `💳 Yangi to'lov so'rovi!\n\n👤 Foydalanuvchi ID: ${userId}\n💰 Summa: ${topupAmount.toLocaleString()} so'm\n🔑 To'lov kodi: ${code}`);
-
+ 
   fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
     method: "POST",
     body: formData
@@ -519,7 +540,6 @@ function sendCheck() {
         action: 'topup_request_sent',
         code: code,
         amount: topupAmount,
-        user_id: userId,
         file_id: fileId
       }));
       
@@ -536,25 +556,25 @@ function sendCheck() {
     document.getElementById('send-check-btn').disabled = false;
   });
 }
-
+ 
 function copyCard() {
   navigator.clipboard.writeText('4916990334038194').then(() => showToast('Nusxalandi! ✅'));
 }
-
+ 
 function applyPromo() { showToast('❌ Noto\'g\'ri promo kod!'); }
-
+ 
 function toggleTheme() {
   isDark = !isDark;
   document.body.classList.toggle('light', !isDark);
 }
-
+ 
 function showToast(msg) {
   const el = document.getElementById('toast');
   el.textContent = msg;
   el.classList.add('show');
   setTimeout(() => el.classList.remove('show'), 2500);
 }
-
+ 
 window.addEventListener('load', function() {
   initUser();
   renderProducts();
@@ -562,3 +582,4 @@ window.addEventListener('load', function() {
 </script>
 </body>
 </html>
+ 
