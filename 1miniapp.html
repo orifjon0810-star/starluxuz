@@ -1,136 +1,686 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StarLux - Premium Store</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
-        :root {
-            --bg-color: #0d0e15;
-            --card-bg: #151724;
-            --accent: #00f2fe;
-            --purple: #7f00ff;
-            --text: #ffffff;
-            --muted: #6c7293;
-        }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text);
-            margin: 0; padding: 15px;
-        }
-        .header { text-align: center; margin-bottom: 20px; }
-        .header h1 { margin: 0; font-size: 24px; color: var(--accent); text-shadow: 0 0 10px rgba(0,242,254,0.3); }
-        
-        .balance-box {
-            background: linear-gradient(135deg, #151724 0%, #1e2238 100%);
-            padding: 15px; border-radius: 12px; text-align: center;
-            border: 1px solid rgba(0,242,254,0.2); margin-bottom: 20px;
-        }
-        .balance-title { font-size: 12px; color: var(--muted); text-transform: uppercase; }
-        .balance-value { font-size: 22px; font-weight: bold; color: #00e676; margin-top: 5px; }
-
-        .notice {
-            background: rgba(255, 152, 0, 0.1); border: 1px solid #ff9800;
-            padding: 12px; border-radius: 10px; font-size: 13px; color: #ffb74d; margin-bottom: 20px;
-        }
-
-        .section-title { font-size: 14px; color: var(--muted); margin-bottom: 10px; text-transform: uppercase; }
-        
-        .product-card {
-            background-color: var(--card-bg); border-radius: 12px; padding: 15px;
-            display: flex; justify-content: space-between; align-items: center;
-            border: 1px solid rgba(255,255,255,0.05); margin-bottom: 12px;
-        }
-        .prod-info h3 { margin: 0 0 5px 0; font-size: 16px; }
-        .prod-info p { margin: 0; font-size: 13px; color: var(--accent); font-weight: bold; }
-        
-        .buy-btn {
-            background: linear-gradient(90deg, var(--accent), var(--purple));
-            color: white; border: none; padding: 10px 18px; border-radius: 8px;
-            font-weight: bold; cursor: pointer; transition: transform 0.1s;
-        }
-        .buy-btn:active { transform: scale(0.95); }
-
-        .card-details {
-            background-color: #1a1c2e; border: 1px dashed rgba(255,255,255,0.1);
-            padding: 15px; border-radius: 12px; margin-top: 25px;
-        }
-        .card-num { font-family: monospace; font-size: 18px; color: #fff; background: #000; padding: 8px; border-radius: 6px; text-align: center; margin: 8px 0; }
-        
-        .user-footer-inputs { font-size: 11px; color: var(--muted); text-align: center; margin-top: 15px; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LuxStarUz</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #0a0a1a;
+      --card-bg: #1a1f5e;
+      --accent: #c9a84c;
+      --accent2: #f0c060;
+      --text: #e8d5a3;
+      --text2: #ffffff;
+      --nav-bg: #1a1f6e;
+      --product-bg: #1e2470;
+      --price-bg: #2a2f7a;
+      --modal-bg: #0f1445;
+      --card-border: #3a4090;
+      --green: #27ae60;
+      --red: #e74c3c;
+    }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+    }
+    .user-info { display: flex; align-items: center; gap: 10px; }
+    .avatar {
+      width: 44px; height: 44px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; font-weight: bold; color: white; flex-shrink: 0;
+    }
+    .username { font-size: 15px; font-weight: 600; color: var(--text2); }
+    .balance-info {
+      display: flex; align-items: center; gap: 8px;
+      background: var(--card-bg); padding: 8px 14px; border-radius: 20px;
+    }
+    .balance-amount { font-size: 16px; font-weight: bold; color: var(--accent2); }
+    .header {
+      margin: 4px 12px 8px;
+      background: var(--card-bg);
+      border-radius: 16px; padding: 12px 20px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo { font-size: 30px; font-weight: 900; color: var(--accent); font-style: italic; }
+    .theme-toggle {
+      background: var(--bg); border: none; border-radius: 20px;
+      padding: 6px 12px; cursor: pointer; font-size: 18px; display: flex; gap: 4px;
+    }
+    .nav {
+      margin: 0 12px 8px;
+      background: var(--nav-bg); border-radius: 30px; padding: 5px; display: flex; gap: 4px;
+    }
+    .nav-btn {
+      flex: 1; padding: 9px 6px; border: none; border-radius: 24px;
+      background: transparent; color: var(--accent); font-size: 13px;
+      font-weight: 700; cursor: pointer; font-family: inherit; transition: all 0.2s;
+    }
+    .nav-btn.active { background: var(--bg); color: var(--accent2); }
+    .page { display: none; padding: 0 12px 80px; }
+    .page.active { display: block; }
+    .products-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .product-card {
+      background: var(--product-bg); border-radius: 16px; overflow: hidden;
+      cursor: pointer; border: 1px solid var(--card-border); transition: transform 0.15s;
+    }
+    .product-card:active { transform: scale(0.97); }
+    .product-img-placeholder {
+      width: 100%; aspect-ratio: 1;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 48px; background: linear-gradient(135deg, #1a2080, #2a3090);
+    }
+    .product-name { text-align: center; font-size: 14px; font-weight: 700; color: var(--accent); padding: 8px 8px 4px; }
+    .product-price {
+      text-align: center; background: var(--price-bg);
+      margin: 0 8px 10px; border-radius: 20px; padding: 6px;
+      font-size: 13px; font-weight: 700; color: var(--accent2);
+    }
+    /* INPUT STYLE MODIFICATIONS */
+    .input-field-custom {
+      width: 100%; background: var(--bg); border: 2px solid var(--card-border);
+      border-radius: 12px; padding: 12px 16px; color: var(--text2);
+      font-size: 15px; font-family: inherit; margin-bottom: 12px; outline: none;
+    }
+    .input-field-custom:focus { border-color: var(--accent); }
+    
+    /* PROMO */
+    .promo-box {
+      background: var(--card-bg); border-radius: 16px; padding: 24px 20px;
+      display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;
+    }
+    .promo-text { font-size: 17px; font-weight: 700; color: var(--accent); line-height: 1.5; }
+    .promo-icon { font-size: 56px; }
+    .promo-input-box { background: var(--card-bg); border-radius: 16px; padding: 20px; }
+    .promo-input {
+      width: 100%; background: var(--bg); border: 2px solid var(--card-border);
+      border-radius: 12px; padding: 12px 16px; color: var(--text2);
+      font-size: 15px; font-family: inherit; margin-bottom: 12px; outline: none;
+    }
+    .promo-input:focus { border-color: var(--accent); }
+    .promo-apply-btn {
+      width: 100%; padding: 13px;
+      background: linear-gradient(135deg, var(--card-bg), var(--accent));
+      border: none; border-radius: 12px; color: var(--bg);
+      font-size: 15px; font-weight: 700; cursor: pointer; font-family: inherit;
+    }
+    /* TOPUP */
+    .topup-card-wrap { background: var(--card-bg); border-radius: 20px; padding: 20px; margin-bottom: 12px; }
+    .bank-card {
+      background: linear-gradient(135deg, #1a1a1a, #888);
+      border-radius: 18px; padding: 24px 20px; position: relative; overflow: hidden; min-height: 170px;
+    }
+    .chip { font-size: 30px; margin-bottom: 24px; display: block; }
+    .card-number {
+      font-size: 17px; font-weight: 700; color: var(--accent);
+      letter-spacing: 2px; margin-bottom: 6px; display: flex; align-items: center; gap: 8px;
+    }
+    .copy-btn { background: none; border: none; cursor: pointer; font-size: 16px; }
+    .card-owner { font-size: 13px; color: var(--accent2); font-style: italic; }
+    .topup-amount-section { margin-top: 16px; }
+    .topup-label { font-size: 13px; color: var(--text); margin-bottom: 8px; font-weight: 600; }
+    .amount-input {
+      width: 100%; background: var(--bg); border: 2px solid var(--card-border);
+      border-radius: 12px; padding: 12px 16px; color: var(--text2);
+      font-size: 16px; font-family: inherit; outline: none; margin-bottom: 10px;
+    }
+    .amount-input:focus { border-color: var(--accent); }
+    .quick-amounts { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+    .quick-btn {
+      background: var(--price-bg); border: 1px solid var(--card-border);
+      border-radius: 20px; padding: 6px 14px; color: var(--accent2);
+      font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit;
+    }
+    .topup-btn {
+      width: 100%; padding: 14px;
+      background: linear-gradient(135deg, #1a2080, var(--accent));
+      border: none; border-radius: 12px; color: white;
+      font-size: 15px; font-weight: 700; cursor: pointer; font-family: inherit;
+    }
+    .topup-info { margin-top: 10px; font-size: 12px; color: var(--text); text-align: center; line-height: 1.5; opacity: 0.8; }
+    /* CONFIRM MODAL */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.85); z-index: 200; align-items: flex-end;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal {
+      background: var(--modal-bg); border-radius: 24px 24px 0 0;
+      padding: 24px 20px 40px; width: 100%; border-top: 2px solid var(--card-border);
+      max-height: 90vh; overflow-y: auto;
+    }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+    .modal-title { font-size: 18px; font-weight: 700; color: var(--accent); }
+    .modal-close {
+      background: var(--price-bg); border: none; border-radius: 50%;
+      width: 32px; height: 32px; cursor: pointer; font-size: 16px; color: var(--text2);
+    }
+    .modal-img-placeholder {
+      width: 100%; height: 110px; border-radius: 16px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 50px; background: linear-gradient(135deg, #1a2080, #2a3090); margin-bottom: 14px;
+    }
+    .modal-price { font-size: 26px; font-weight: 900; color: var(--accent2); margin-bottom: 6px; }
+    .modal-desc { font-size: 13px; color: var(--text); opacity: 0.8; margin-bottom: 16px; line-height: 1.5; }
+    .modal-balance {
+      background: var(--price-bg); border-radius: 12px;
+      padding: 12px 16px; margin-bottom: 14px; font-size: 14px; color: var(--text);
+    }
+    .modal-balance span { color: var(--accent2); font-weight: 700; }
+    .modal-buy-btn {
+      width: 100%; padding: 14px;
+      background: linear-gradient(135deg, #1a2080, var(--accent));
+      border: none; border-radius: 14px; color: white;
+      font-size: 16px; font-weight: 700; cursor: pointer; font-family: inherit; margin-bottom: 8px;
+    }
+    .modal-cancel-btn {
+      width: 100%; padding: 12px; background: transparent;
+      border: none; color: var(--text); font-size: 14px; cursor: pointer; font-family: inherit; opacity: 0.7;
+    }
+    /* TOPUP CONFIRM */
+    .topup-confirm {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.85); z-index: 300; align-items: flex-end;
+    }
+    .topup-confirm.active { display: flex; }
+    .topup-confirm-box {
+      background: var(--modal-bg); border-radius: 24px 24px 0 0;
+      padding: 24px 20px 40px; width: 100%; border-top: 2px solid var(--card-border);
+      max-height: 90vh; overflow-y: auto;
+    }
+    .confirm-title { font-size: 18px; font-weight: 700; color: var(--accent); margin-bottom: 6px; }
+    .confirm-desc { font-size: 13px; color: var(--text); opacity: 0.8; margin-bottom: 16px; line-height: 1.5; }
+    .confirm-card { background: var(--price-bg); border-radius: 12px; padding: 14px 16px; margin-bottom: 16px; }
+    .confirm-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; font-size: 14px; }
+    .confirm-row .lbl { color: var(--text); opacity: 0.8; }
+    .confirm-row .val { color: var(--accent2); font-weight: 700; }
+    /* FILE UPLOAD */
+    .upload-area {
+      border: 2px dashed var(--card-border); border-radius: 14px;
+      padding: 20px; text-align: center; cursor: pointer;
+      margin-bottom: 14px; transition: border-color 0.2s;
+    }
+    .upload-area:hover { border-color: var(--accent); }
+    .upload-area.has-file { border-color: var(--green); background: rgba(39,174,96,0.1); }
+    .upload-icon { font-size: 36px; margin-bottom: 8px; }
+    .upload-text { font-size: 14px; color: var(--text); }
+    .upload-text span { color: var(--accent2); font-weight: 600; }
+    #file-input { display: none; }
+    .preview-img { width: 100%; border-radius: 12px; margin-bottom: 12px; max-height: 150px; object-fit: cover; }
+    .send-check-btn {
+      width: 100%; padding: 14px;
+      background: linear-gradient(135deg, #1a2080, var(--accent));
+      border: none; border-radius: 14px; color: white;
+      font-size: 16px; font-weight: 700; cursor: pointer; font-family: inherit; margin-bottom: 8px;
+    }
+    .send-check-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .cancel-btn2 {
+      width: 100%; padding: 12px; background: transparent;
+      border: none; color: var(--text); font-size: 14px; cursor: pointer; font-family: inherit; opacity: 0.7;
+    }
+    /* TOAST */
+    .toast {
+      position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%);
+      background: var(--accent); color: var(--bg);
+      padding: 10px 20px; border-radius: 20px; font-size: 14px; font-weight: 700;
+      z-index: 999; opacity: 0; transition: opacity 0.3s; white-space: nowrap;
+    }
+    .toast.show { opacity: 1; }
+    body.light {
+      --bg: #f0f2ff; --card-bg: #2a35b0; --text: #1a2080;
+      --text2: #ffffff; --nav-bg: #2a35b0; --product-bg: #2a35b0;
+      --price-bg: #1a2590; --modal-bg: #e8ecff; --card-border: #4a55c0;
+    }
+    .stars-count-box {
+      display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 15px;
+    }
+    .stars-count-btn {
+      background: var(--price-bg); border: 1px solid var(--card-border);
+      color: var(--text2); width: 40px; height: 40px; border-radius: 10px;
+      font-size: 20px; font-weight: bold; cursor: pointer;
+    }
+    .stars-count-input {
+      width: 80px; text-align: center; background: var(--bg);
+      border: 2px solid var(--card-border); color: var(--text2);
+      padding: 8px; border-radius: 8px; font-size: 16px; font-weight: bold;
+    }
+  </style>
 </head>
 <body>
 
-    <div class="header">
-        <h1>STARLUX DO'KON</h1>
+<div class="topbar">
+  <div class="user-info">
+    <div class="avatar" id="avatar">?</div>
+    <div class="username" id="username">...</div>
+  </div>
+  <div class="balance-info">
+    <span class="balance-amount" id="balance-display">0</span>
+    <span>🪙</span>
+  </div>
+</div>
+
+<div class="header">
+  <div class="logo">LuxStarUz</div>
+  <button class="theme-toggle" onclick="toggleTheme()">🌙☀️</button>
+</div>
+
+<div class="nav">
+  <button class="nav-btn active" id="nav-menu" onclick="showPage('menu')">Menyu</button>
+  <button class="nav-btn" id="nav-promo" onclick="showPage('promo')">Promo kod</button>
+  <button class="nav-btn" id="nav-topup" onclick="showPage('topup')">Hisobni to'ldirish</button>
+</div>
+
+<div class="page active" id="page-menu">
+  <div class="products-grid" id="products-grid"></div>
+</div>
+
+<div class="page" id="page-promo">
+  <div class="promo-box">
+    <div class="promo-text">Promo kod olish<br>hozircha imkonsiz</div>
+    <div class="promo-icon">❌</div>
+  </div>
+  <div class="promo-input-box">
+    <input class="promo-input" id="promo-input" placeholder="Promo kodni kiriting..." />
+    <button class="promo-apply-btn" onclick="applyPromo()">Tasdiqlash</button>
+  </div>
+</div>
+
+<div class="page" id="page-topup">
+  <div class="topup-card-wrap">
+    
+    <!-- SO'M VA CONTACT MA'LUMOTLARINI KIRITISH -->
+    <div class="topup-amount-section" style="margin-top: 0; margin-bottom: 20px;">
+      <div class="topup-label">1. To'ldirish summasini kiriting (so'm):</div>
+      <input class="amount-input" id="amount-input" type="number" placeholder="50000" oninput="validateTopupInputs()" />
+      <div class="quick-amounts">
+        <button class="quick-btn" onclick="setAmount(50000)">50 000</button>
+        <button class="quick-btn" onclick="setAmount(100000)">100 000</button>
+        <button class="quick-btn" onclick="setAmount(200000)">200 000</button>
+        <button class="quick-btn" onclick="setAmount(500000)">500 000</button>
+      </div>
+
+      <div class="topup-label">2. Telegram @username yoki ID kiriting:</div>
+      <input class="input-field-custom" id="topup-contact-input" type="text" placeholder="@SizningProfil yoki ID" oninput="validateTopupInputs()" />
     </div>
 
-    <div class="balance-box">
-        <div class="balance-title">Sizning balansingiz</div>
-        <div class="balance-value" id="user-balance">0 so'm</div>
-    </div>
-
-    <div class="notice">
-        ⚠️ **OGOHLANTIRISH:** To'lov chekini rasm qilib yuborayotganingizda, rasm ostidagi **izohga** o'zingizning Telegram **@username** manzilingizni yoki **ID raqamingizni** yozib yuboring! Hisobingiz to'lgach pastdagi tugmalar orqali xarid qilasiz.
-    </div>
-
-    <div class="section-title">Xarid qilish toifalari:</div>
-
-    <div class="product-card">
-        <div class="prod-info">
-            <h3>💎 Telegram Premium (1 Oylik)</h3>
-            <p>2,000 so'm</p>
+    <!-- KARTA REKVIZITI (FAQAT INPUTLAR TO'LGANDA KO'RINADI) -->
+    <div id="bank-card-area" style="display: none; transition: all 0.3s;">
+      <div class="bank-card">
+        <span class="chip">🏧</span>
+        <div class="card-number">
+          <span>4916 9903 3403 8194</span>
+          <button class="copy-btn" onclick="copyCard()">📋</button>
         </div>
-        <button class="buy-btn" onclick="triggerBuy('Telegram Premium (1 Oylik)', 2000)">Xarid</button>
+        <div class="card-owner">VISA • LuxStarUz</div>
+      </div>
+      <button class="topup-btn" style="margin-top: 15px;" onclick="showTopupConfirm()">💳 Chek yuborish bo'limi</button>
+    </div>
+    
+    <div class="topup-info">Kartani ko'rish, pul o'tkazish va chek yuborish uchun yuqoridagi maydonlarni to'ldiring.</div>
+  </div>
+</div>
+
+<!-- MAHSULOT XARID QILISH MODAL OYNASI -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-name"></div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-img-placeholder"><span id="modal-emoji"></span></div>
+    
+    <!-- AGAR STARS BO'LSA DONA TANLASH KO'RINADI -->
+    <div id="stars-quantity-selector" style="display:none;">
+      <div class="topup-label" style="text-align:center;">Sotib olish miqdorini kiriting (Dona):</div>
+      <div class="stars-count-box">
+        <button class="stars-count-btn" onclick="changeStarsCount(-1)">-</button>
+        <input type="number" class="stars-count-input" id="stars-count-input" value="1" min="1" oninput="calculateStarsPrice()" />
+        <button class="stars-count-btn" onclick="changeStarsCount(1)">+</button>
+      </div>
     </div>
 
-    <div class="product-card">
-        <div class="prod-info">
-            <h3>💎 Telegram Premium (3 Oylik)</h3>
-            <p>6,000 so'm</p>
-        </div>
-        <button class="buy-btn" onclick="triggerBuy('Telegram Premium (3 Oylik)', 6000)">Xarid</button>
+    <div class="modal-price" id="modal-price"></div>
+    <div class="modal-desc" id="modal-desc"></div>
+
+    <!-- XARID QILISH PAYTIDAGI MAJBURIY ALOQA MAYDONI -->
+    <div class="topup-label">Telegram @username yoki ID kiriting (Premium/Stars taqdim etilishi uchun):</div>
+    <input class="input-field-custom" id="purchase-contact-input" type="text" placeholder="@profil yoki ID yozing..." />
+
+    <div class="modal-balance">Balansingiz: <span id="modal-balance-show">0</span> 🪙</div>
+    <button class="modal-buy-btn" onclick="buyProduct()">🛒 Xaridni tasdiqlash</button>
+    <button class="modal-cancel-btn" onclick="closeModal()">Bekor qilish</button>
+  </div>
+</div>
+
+<!-- CHEK YUBORISH MODAL OYNASI -->
+<div class="topup-confirm" id="topup-confirm">
+  <div class="topup-confirm-box">
+    <div class="confirm-title">💳 To'lov ma'lumotlari</div>
+    <div class="confirm-desc">Kartaga pul o'tkazing va chek rasmini yuklab adminga yuboring:</div>
+    <div class="confirm-card">
+      <div class="confirm-row">
+        <span class="lbl">Karta:</span>
+        <span class="val">4916 9903 3403 8194</span>
+      </div>
+      <div class="confirm-row">
+        <span class="lbl">Summa:</span>
+        <span class="val" id="confirm-amount">0 so'm</span>
+      </div>
+      <div class="confirm-row">
+        <span class="lbl">Yuboruvchi:</span>
+        <span class="val" id="confirm-user-contact">-</span>
+      </div>
+      <div class="confirm-row">
+        <span class="lbl">To'lov kodi:</span>
+        <span class="val" id="confirm-code">LUX-000</span>
+      </div>
     </div>
 
-    <div class="card-details">
-        <div class="section-title" style="margin:0;">To'lov rekviziti (Bosib nusxalang):</div>
-        <div class="card-num" onclick="navigator.clipboard.writeText('8600123456789012'); alert('Karta raqami nusxalandi!');">8600 1234 5678 9012</div>
-        <div style="font-size: 12px; color: var(--muted); display: flex; justify-content: space-between;">
-            <span>Eshonqulov O.</span>
-            <span>Ucard</span>
-        </div>
+    <div class="upload-area" id="upload-area" onclick="document.getElementById('file-input').click()">
+      <div class="upload-icon">📸</div>
+      <div class="upload-text" id="upload-text-content">Chek rasmini tanlang<br><span>Bosing yoki suring</span></div>
     </div>
+    <input type="file" id="file-input" accept="image/*" onchange="handleFile(this)" />
+    <img id="preview-img" class="preview-img" style="display:none;" />
 
-    <div class="user-footer-inputs" id="user-display-info">
-        Yuklanmoqda...
-    </div>
+    <button class="send-check-btn" id="send-check-btn" onclick="sendCheck()" disabled>
+      📤 Chekni adminga yuborish
+    </button>
+    <button class="cancel-btn2" onclick="closeTopupConfirm()">Orqaga</button>
+  </div>
+</div>
 
-    <script>
-        const tg = window.Telegram.WebApp;
-        tg.ready(); tg.expand();
+<div class="toast" id="toast"></div>
 
-        const urlParams = new URLSearchParams(window.location.search);
-        const currentBalance = urlParams.get('balance') || "0";
-        const userId = urlParams.get('user_id') || "Noma'lum";
-        const username = urlParams.get('username') || "Mavjud emas";
+<script>
+// --- SOZLAMALAR ---
+const BOT_TOKEN = "8643227637:AAFyXYCd6Q_nmErLsNB64HCwDsxm6BnmS80";       
+const ADMIN_CHAT_ID = "8644777926";   
+// ------------------
 
-        document.getElementById('user-balance').innerText = parseInt(currentBalance).toLocaleString() + " so'm";
-        document.getElementById('user-display-info').innerText = "Sizning ID: " + userId + " | " + decodeURIComponent(username);
+const tg = window.Telegram.WebApp;
+tg.ready();
+tg.expand();
 
-        function triggerBuy(productName, productPrice) {
-            const dataPacket = {
-                action: "buy",
-                name: productName,
-                price: productPrice,
-                tg_id: userId,
-                tg_username: decodeURIComponent(username)
-            };
-            tg.sendData(JSON.stringify(dataPacket));
-            tg.close();
-        }
-    </script>
+const urlParams = new URLSearchParams(window.location.search);
+let lang = urlParams.get('lang') || 'uz';
+let balance = parseInt(urlParams.get('balance') || '0');
+let userId = 0;
+let selectedFile = null;
+let selectedProduct = null;
+let topupAmount = 0;
+let isDark = true;
+let starsUnitPrice = 250; 
+
+const PRODUCTS = [
+  { key: "premium3", name: "3 Oylik Obuna", price: 180000, emoji: "💎", desc: "Telegram Premium 3 oylik obuna!" },
+  { key: "premium6", name: "6 Oylik Obuna", price: 230000, emoji: "💎", desc: "Telegram Premium 6 oylik obuna!" },
+  { key: "premium12", name: "1 Yillik Obuna", price: 410000, emoji: "💎", desc: "Telegram Premium 1 yillik obuna!" },
+  { key: "stars1", name: "Telegram Stars", price: 250, emoji: "⭐", desc: "Telegram yulduzchalari (Xohlagan miqdorda tanlang)!" },
+];
+
+const avatarColors = ['#e74c3c','#e67e22','#27ae60','#2980b9','#8e44ad','#16a085'];
+
+function initUser() {
+  const user = tg.initDataUnsafe?.user;
+  const name = user?.first_name || 'Foydalanuvchi';
+  userId = user?.id || 0;
+  
+  if(user?.username) {
+    document.getElementById('topup-contact-input').value = '@' + user.username;
+    document.getElementById('purchase-contact-input').value = '@' + user.username;
+  } else if(userId) {
+    document.getElementById('topup-contact-input').value = userId;
+    document.getElementById('purchase-contact-input').value = userId;
+  }
+
+  const letter = name.charAt(0).toUpperCase();
+  const el = document.getElementById('avatar');
+  el.textContent = letter;
+  el.style.background = avatarColors[Math.abs(userId * 31) % avatarColors.length];
+  document.getElementById('username').textContent = name;
+  document.getElementById('balance-display').textContent = balance.toLocaleString();
+  validateTopupInputs();
+}
+
+function renderProducts() {
+  const grid = document.getElementById('products-grid');
+  grid.innerHTML = PRODUCTS.map(p => `
+    <div class="product-card" onclick='openModal(${JSON.stringify(p)})'>
+      <div class="product-img-placeholder">${p.emoji}</div>
+      <div class="product-name">${p.name}</div>
+      <div class="product-price">${p.price.toLocaleString()} so'm</div>
+    </div>`).join('');
+}
+
+function validateTopupInputs() {
+  const amount = document.getElementById('amount-input').value;
+  const contact = document.getElementById('topup-contact-input').value.trim();
+  const cardArea = document.getElementById('bank-card-area');
+
+  if(amount && amount > 0 && contact.length >= 3) {
+    cardArea.style.display = 'block';
+  } else {
+    cardArea.style.display = 'none';
+  }
+}
+
+function setAmount(val) { 
+  document.getElementById('amount-input').value = val; 
+  validateTopupInputs();
+}
+
+function showPage(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  document.getElementById('nav-' + page).classList.add('active');
+}
+
+function openModal(product) {
+  selectedProduct = JSON.parse(JSON.stringify(product)); 
+  document.getElementById('modal-name').textContent = product.name;
+  document.getElementById('modal-emoji').textContent = product.emoji;
+  document.getElementById('modal-desc').textContent = product.desc;
+  document.getElementById('modal-balance-show').textContent = balance.toLocaleString();
+  
+  const starsSelector = document.getElementById('stars-quantity-selector');
+  if(product.key === "stars1") {
+    starsSelector.style.display = 'block';
+    document.getElementById('stars-count-input').value = 1;
+    calculateStarsPrice();
+  } else {
+    starsSelector.style.display = 'none';
+    document.getElementById('modal-price').textContent = product.price.toLocaleString() + " so'm";
+  }
+  
+  document.getElementById('modal').classList.add('active');
+}
+
+function changeStarsCount(val) {
+  const input = document.getElementById('stars-count-input');
+  let current = parseInt(input.value) || 1;
+  current += val;
+  if(current < 1) current = 1;
+  input.value = current;
+  calculateStarsPrice();
+}
+
+function calculateStarsPrice() {
+  const count = parseInt(document.getElementById('stars-count-input').value) || 1;
+  selectedProduct.price = count * starsUnitPrice;
+  selectedProduct.quantity = count; 
+  document.getElementById('modal-price').textContent = selectedProduct.price.toLocaleString() + " so'm";
+}
+
+function closeModal() { document.getElementById('modal').classList.remove('active'); }
+
+function buyProduct() {
+  if (!selectedProduct) return;
+  const contactInfo = document.getElementById('purchase-contact-input').value.trim();
+  
+  if(!contactInfo || contactInfo.length < 3) {
+    showToast("❗ Iltimos, @username yoki Telegram IDingizni kiriting!");
+    return;
+  }
+
+  if (balance < selectedProduct.price) {
+    showToast("❗ Balans yetarli emas! Avval hisobni to'ldiring.");
+    closeModal();
+    showPage('topup');
+    return;
+  }
+
+  showToast("⏳ Xarid so'rovi yuborilmoqda...");
+
+  let orderDetails = selectedProduct.name;
+  if(selectedProduct.key === "stars1") {
+    orderDetails = `${selectedProduct.quantity} dona Telegram Stars`;
+  }
+
+  const messageText = `🛍 **YANGI XARID AMALGA OSHIRILDI!**\n\n` +
+                      `📦 Mahsulot: ${orderDetails}\n` +
+                      `💰 Sarflangan summa: ${selectedProduct.price.toLocaleString()} so'm\n` +
+                      `👤 Xaridor kontakti: ${contactInfo}\n` +
+                      `🆔 Telegram Ichki ID: ${userId}\n\n` +
+                      `ℹ️ Hisobidan pul yechildi. Premium yoki Starsni unga yetkazib bering!`;
+
+  fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ chat_id: ADMIN_CHAT_ID, text: messageText, parse_mode: "Markdown" })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if(data.ok) {
+      balance -= selectedProduct.price;
+      document.getElementById('balance-display').textContent = balance.toLocaleString();
+      closeModal();
+      showToast('✅ Xarid muvaffaqiyatli amalga oshirildi va adminga yuborildi!');
+    } else {
+      showToast('❌ Kutilmagan xatolik! Iltimos, xaridni qaytadan amalga oshiring.');
+    }
+  })
+  .catch(() => showToast('❌ Tarmoq xatoligi yuz berdi!'));
+}
+
+function generateCode() {
+  const now = new Date();
+  return `LUX-${userId || 'USER'}-${String(now.getMinutes()).padStart(2,'0')}${String(now.getSeconds()).padStart(2,'0')}`;
+}
+
+function showTopupConfirm() {
+  const val = document.getElementById('amount-input').value;
+  const contact = document.getElementById('topup-contact-input').value.trim();
+  
+  if (!val || val <= 0) { showToast("Summani kiriting!"); return; }
+  if (!contact || contact.length < 3) { showToast("Profil yoki ID kiriting!"); return; }
+  
+  topupAmount = parseInt(val);
+  const code = generateCode();
+  
+  document.getElementById('confirm-amount').textContent = topupAmount.toLocaleString() + " so'm";
+  document.getElementById('confirm-user-contact').textContent = contact;
+  document.getElementById('confirm-code').textContent = code;
+  document.getElementById('topup-confirm').classList.add('active');
+  
+  // Rasm maydonini har doim to'liq tozalash (Foydalanuvchi qayta-qayta yubora olishi uchun RESET)
+  selectedFile = null;
+  document.getElementById('file-input').value = "";
+  document.getElementById('preview-img').style.display = 'none';
+  const uploadArea = document.getElementById('upload-area');
+  uploadArea.classList.remove('has-file');
+  uploadArea.innerHTML = '<div class="upload-icon">📸</div><div class="upload-text">Chek rasmini tanlang<br><span>Bosing yoki suring</span></div>';
+  document.getElementById('send-check-btn').disabled = true;
+}
+
+function closeTopupConfirm() { document.getElementById('topup-confirm').classList.remove('active'); }
+
+function handleFile(input) {
+  const file = input.files[0];
+  if (!file) return;
+  selectedFile = file;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const img = document.getElementById('preview-img');
+    img.src = e.target.result;
+    img.style.display = 'block';
+    
+    const uploadArea = document.getElementById('upload-area');
+    uploadArea.classList.add('has-file');
+    uploadArea.innerHTML = '<div class="upload-icon">✅</div><div class="upload-text">Rasm yuklandi!</div>';
+    document.getElementById('send-check-btn').disabled = false;
+  };
+  reader.readAsDataURL(file);
+}
+
+function sendCheck() {
+  if (!selectedFile) { showToast("Chek rasmini tanlang!"); return; }
+  const code = document.getElementById('confirm-code').textContent;
+  const contact = document.getElementById('confirm-user-contact').textContent;
+  
+  showToast("⏳ Chek adminga yuborilmoqda...");
+  document.getElementById('send-check-btn').disabled = true;
+
+  const formData = new FormData();
+  formData.append("chat_id", ADMIN_CHAT_ID);
+  formData.append("photo", selectedFile);
+  formData.append("caption", `💳 **YANGI TO'LOV CHEKI KELDI!**\n\n👤 Yuboruvchi kontakti: ${contact}\n🆔 Telegram ID: ${userId}\n💰 Summa: ${topupAmount.toLocaleString()} so'm\n🔑 To'lov kodi: ${code}`);
+
+  // Fetch orqali to'g'ridan-to'g'ri API'ga yuboramiz. Ilova yopilib ketmaydi!
+  fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
+    method: "POST",
+    body: formData
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.ok) {
+      closeTopupConfirm();
+      showToast('✅ Chek muvaffaqiyatli yuborildi! Admin tez orada tasdiqlaydi.');
+      // Foydalanuvchi hisob kiritish maydonini tozalash
+      document.getElementById('amount-input').value = "";
+      validateTopupInputs();
+    } else {
+      showToast('❌ Yuborishda xatolik! Token yoki Chat ID xato.');
+      document.getElementById('send-check-btn').disabled = false;
+    }
+  })
+  .catch(error => {
+    console.error("Error:", error);
+    showToast('❌ Tarmoq xatoligi yuz berdi!');
+    document.getElementById('send-check-btn').disabled = false;
+  });
+}
+
+function copyCard() {
+  navigator.clipboard.writeText('4916990334038194').then(() => showToast('Karta raqami nusxalandi! ✅'));
+}
+
+function applyPromo() { showToast('❌ Noto\'g\'ri promo kod!'); }
+function toggleTheme() { isDark = !isDark; document.body.classList.toggle('light', !isDark); }
+
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2500);
+}
+
+window.addEventListener('load', function() {
+  initUser();
+  renderProducts();
+});
+</script>
 </body>
 </html>
