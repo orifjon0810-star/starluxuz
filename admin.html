@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StarLux - Admin Boshqaruv Paneli</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        :root {
+            --bg-color: #1a1a2e;
+            --card-bg: #16213e;
+            --text-color: #ffffff;
+            --accent-color: #0f3460;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 15px;
+        }
+
+        .header {
+            text-align: center;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--accent-color);
+            margin-bottom: 20px;
+        }
+
+        .header h2 {
+            margin: 5px 0;
+            font-size: 22px;
+            color: #00fff0;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            border: 1px solid #2d4059;
+        }
+
+        .card-title {
+            font-weight: bold;
+            font-size: 16px;
+            color: #ffde7d;
+            margin-bottom: 10px;
+        }
+
+        /* Rasm joylashuvi sozlamalari */
+        .receipt-img-container {
+            text-align: center;
+            margin: 15px 0;
+            background: #0f3460;
+            border-radius: 8px;
+            padding: 5px;
+            border: 1px solid #00fff0;
+        }
+
+        .receipt-img {
+            max-width: 100%;
+            max-height: 250px;
+            border-radius: 6px;
+            display: none; /* Rasm yo'q bo'lsa ko'rinmaydi */
+        }
+
+        .info-row {
+            margin: 6px 0;
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px dashed #2d4059;
+            padding-bottom: 4px;
+        }
+
+        .info-value {
+            font-weight: bold;
+            color: #00fff0;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            color: white;
+        }
+
+        .btn-success { background-color: var(--success-color); }
+        .btn-danger { background-color: var(--danger-color); }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h2>⚙️ StarLux Admin Panel</h2>
+        <p style="font-size: 12px; margin: 0; color: #888;">HTML orqali to'liq nazorat</p>
+    </div>
+
+    <div id="payments-container">
+        <div class="card">
+            <div class="card-title">💳 Kelib Tushgan Chek:</div>
+            
+            <div class="receipt-img-container">
+                <span id="img-loader" style="font-size: 12px; color: #aaa;">Rasm yuklanmoqda yoki mavjud emas...</span>
+                <img id="receipt-preview" class="receipt-img" alt="Chek Rasmi">
+            </div>
+
+            <div class="info-row">
+                <span>Foydalanuvchi ID:</span>
+                <span class="info-value" id="user-id">-</span>
+            </div>
+            <div class="info-row">
+                <span>Summa:</span>
+                <span class="info-value" style="color: #28a745;" id="payment-amount">0 so'm</span>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn-success" onclick="processPayment('ok')">✅ Ruxsat berish (+)</button>
+                <button class="btn-danger" onclick="processPayment('no')">❌ Rad etish</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+        tg.expand();
+
+        // URL orqali kelgan argumentlarni o'qiymiz
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlUserId = urlParams.get('user_id');
+        const urlAmount = urlParams.get('amount');
+        const urlPhoto = urlParams.get('photo_url'); // Botdan kelgan rasm linki
+
+        if(urlUserId) document.getElementById('user-id').innerText = urlUserId;
+        if(urlAmount) document.getElementById('payment-amount').innerText = parseInt(urlAmount).toLocaleString() + " so'm";
+        
+        // Agar rasm havolasi kelgan bo'lsa, uni ko'rsatamiz
+        if(urlPhoto) {
+            const imgTag = document.getElementById('receipt-preview');
+            imgTag.src = decodeURIComponent(urlPhoto);
+            imgTag.style.display = 'inline-block';
+            document.getElementById('img-loader').style.display = 'none';
+        }
+
+        function processPayment(status) {
+            const userId = document.getElementById('user-id').innerText;
+            const amountRaw = document.getElementById('payment-amount').innerText;
+            const amount = amountRaw.replace(/[^0-9]/g, '');
+
+            const resultData = {
+                action: "admin_decision",
+                status: status,
+                user_id: parseInt(userId),
+                amount: parseInt(amount)
+            };
+
+            tg.sendData(JSON.stringify(resultData));
+            tg.close();
+        }
+    </script>
+</body>
+</html>
