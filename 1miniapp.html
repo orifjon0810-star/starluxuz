@@ -48,6 +48,7 @@
       display: flex; align-items: center; justify-content: center;
       font-size: 17px; font-weight: 800; color: white; flex-shrink: 0;
       box-shadow: var(--shadow);
+      text-transform: uppercase;
     }
     .username { font-size: 14px; font-weight: 700; color: var(--text2); }
     .balance-info {
@@ -107,28 +108,6 @@
       margin: 8px 10px 12px; border-radius: 20px; padding: 7px;
       font-size: 13px; font-weight: 800; color: #1a1200;
     }
-    /* PROMO */
-    .promo-box {
-      background: linear-gradient(135deg, var(--card-bg), var(--card-bg2));
-      border-radius: 20px; padding: 26px 22px;
-      display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;
-      border: 1px solid var(--card-border); box-shadow: var(--shadow);
-    }
-    .promo-text { font-size: 16px; font-weight: 700; color: var(--text2); line-height: 1.5; }
-    .promo-icon { font-size: 50px; }
-    .promo-input-box { background: var(--card-bg); border-radius: 20px; padding: 20px; border: 1px solid var(--card-border); }
-    .promo-input {
-      width: 100%; background: var(--bg); border: 2px solid var(--card-border);
-      border-radius: 14px; padding: 13px 16px; color: var(--text2);
-      font-size: 15px; font-family: inherit; margin-bottom: 12px; outline: none;
-    }
-    .promo-input:focus { border-color: var(--accent); }
-    .promo-apply-btn {
-      width: 100%; padding: 14px;
-      background: var(--accent-grad);
-      border: none; border-radius: 14px; color: #1a1200;
-      font-size: 15px; font-weight: 800; cursor: pointer; font-family: inherit;
-    }
     /* TOPUP */
     .topup-card-wrap { background: linear-gradient(160deg, var(--card-bg), var(--card-bg2)); border-radius: 22px; padding: 20px; margin-bottom: 12px; border: 1px solid var(--card-border); box-shadow: var(--shadow); }
     .bank-card {
@@ -164,19 +143,19 @@
       font-size: 15px; font-weight: 800; cursor: pointer; font-family: inherit;
     }
     .topup-info { margin-top: 12px; font-size: 12px; color: var(--text); text-align: center; line-height: 1.6; opacity: 0.8; }
-    /* CONFIRM MODAL */
-    .modal-overlay {
+    
+    /* MODALS */
+    .modal-overlay, .topup-confirm {
       display: none; position: fixed; inset: 0;
       background: rgba(5,5,20,0.88); z-index: 200; align-items: flex-end;
       backdrop-filter: blur(3px);
     }
-    .modal-overlay.active { display: flex; }
-    .modal {
+    .modal-overlay.active, .topup-confirm.active { display: flex; }
+    .modal, .topup-confirm-box {
       background: var(--modal-bg); border-radius: 26px 26px 0 0;
       padding: 22px 20px 40px; width: 100%; border-top: 1px solid var(--card-border);
       box-shadow: 0 -10px 40px rgba(0,0,0,0.5);
-      max-height: 85vh;
-      overflow-y: auto;
+      max-height: 85vh; overflow-y: auto;
     }
     .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
     .modal-title { font-size: 18px; font-weight: 800; color: var(--text2); }
@@ -198,16 +177,17 @@
       border: 1px solid var(--card-border);
     }
     .modal-balance span { color: var(--accent2); font-weight: 700; }
-    .modal-buy-btn {
+    .modal-buy-btn, .send-check-btn {
       width: 100%; padding: 15px;
       background: var(--accent-grad);
       border: none; border-radius: 16px; color: #1a1200;
       font-size: 16px; font-weight: 800; cursor: pointer; font-family: inherit; margin-bottom: 8px;
     }
-    .modal-cancel-btn {
+    .modal-cancel-btn, .cancel-btn2 {
       width: 100%; padding: 12px; background: transparent;
       border: none; color: var(--text); font-size: 14px; cursor: pointer; font-family: inherit; opacity: 0.7;
     }
+    
     /* STARS SELECTOR */
     .stars-selector { margin-bottom: 14px; }
     .stars-options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
@@ -219,33 +199,8 @@
     .stars-option.selected {
       background: var(--accent-grad); color: #1a1200; border-color: var(--accent);
     }
-    /* UPLOAD */
-    .upload-section { margin-bottom: 14px; }
-    .upload-area {
-      border: 2px dashed var(--card-border); border-radius: 14px;
-      padding: 20px; text-align: center; cursor: pointer;
-      transition: border-color 0.2s; background: var(--card-bg);
-    }
-    .upload-area:hover { border-color: var(--accent); }
-    .upload-area.has-file { border-color: var(--green); background: rgba(46,204,113,0.1); }
-    .upload-icon { font-size: 36px; margin-bottom: 8px; }
-    .upload-text { font-size: 14px; color: var(--text); }
-    .upload-text span { color: var(--accent2); font-weight: 600; }
-    #file-input { display: none; }
-    .preview-img { width: 100%; border-radius: 12px; margin-bottom: 12px; max-height: 200px; object-fit: cover; }
+    
     /* TOPUP CONFIRM */
-    .topup-confirm {
-      display: none; position: fixed; inset: 0;
-      background: rgba(5,5,20,0.88); z-index: 300; align-items: flex-end;
-      backdrop-filter: blur(3px);
-    }
-    .topup-confirm.active { display: flex; }
-    .topup-confirm-box {
-      background: var(--modal-bg); border-radius: 26px 26px 0 0;
-      padding: 24px 20px 40px; width: 100%; border-top: 1px solid var(--card-border);
-      max-height: 85vh;
-      overflow-y: auto;
-    }
     .confirm-title { font-size: 18px; font-weight: 800; color: var(--text2); margin-bottom: 6px; }
     .confirm-desc { font-size: 13px; color: var(--text); opacity: 0.85; margin-bottom: 16px; line-height: 1.6; }
     .confirm-card { background: var(--price-bg); border-radius: 14px; padding: 14px 16px; margin-bottom: 18px; border: 1px solid var(--card-border); }
@@ -254,20 +209,10 @@
     .confirm-row .val { color: var(--accent2); font-weight: 700; }
     .confirm-steps {
       background: var(--card-bg); border-radius: 14px; padding: 14px 16px; margin-bottom: 18px;
-      font-size: 13px; line-height: 1.9; border: 1px solid var(--card-border);
+      font-size: 13px; line-height: 1.8; border: 1px solid var(--card-border);
     }
     .confirm-steps b { color: var(--accent2); }
-    .send-check-btn {
-      width: 100%; padding: 15px;
-      background: var(--accent-grad);
-      border: none; border-radius: 16px; color: #1a1200;
-      font-size: 16px; font-weight: 800; cursor: pointer; font-family: inherit; margin-bottom: 8px;
-    }
-    .send-check-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    .cancel-btn2 {
-      width: 100%; padding: 12px; background: transparent;
-      border: none; color: var(--text); font-size: 14px; cursor: pointer; font-family: inherit; opacity: 0.7;
-    }
+    
     /* TOAST */
     .toast {
       position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%);
@@ -290,7 +235,7 @@
 <div class="topbar">
   <div class="user-info">
     <div class="avatar" id="avatar">?</div>
-    <div class="username" id="username">...</div>
+    <div class="username" id="username">Yuklanmoqda...</div>
   </div>
   <div class="balance-info">
     <span class="balance-amount" id="balance-display">0</span>
@@ -331,8 +276,8 @@
         <button class="quick-btn" onclick="setAmount(200000)">200 000</button>
         <button class="quick-btn" onclick="setAmount(500000)">500 000</button>
       </div>
-      <button class="topup-btn" onclick="showTopupConfirm()">💳 To'ldirish</button>
-      <div class="topup-info">Kartaga pul o'tkazing. Keyin chek skrinshotini yuklab, botga yuboring. Admin tasdiqlashidan keyin balans avtomatik qo'shiladi.</div>
+      <button class="topup-btn" onclick="showTopupConfirm()">💳 To'lov qilish</button>
+      <div class="topup-info">Kartaga pul o'tkazib so'rov yuboring, keyin chek rasmini bot chatiga yuboring. Admin tasdiqlagach, balans to'ldiriladi.</div>
     </div>
   </div>
 </div>
@@ -347,7 +292,6 @@
     <div class="modal-price" id="modal-price"></div>
     <div class="modal-desc" id="modal-desc"></div>
 
-    <!-- STARS uchun miqdor tanlash -->
     <div class="stars-selector" id="stars-selector" style="display:none;">
       <div class="topup-label">Nechta Stars xarid qilmoqchisiz?</div>
       <div class="stars-options" id="stars-options"></div>
@@ -365,7 +309,7 @@
 <div class="topup-confirm" id="topup-confirm">
   <div class="topup-confirm-box">
     <div class="confirm-title">💳 To'lov ma'lumotlari</div>
-    <div class="confirm-desc">Kartaga pul o'tkazing, so'ng chek skrinshotini yuklab, yuboring:</div>
+    <div class="confirm-desc">Kartaga pul o'tkazib, so'rovni tasdiqlang:</div>
     <div class="confirm-card">
       <div class="confirm-row">
         <span class="lbl">Karta:</span>
@@ -382,23 +326,14 @@
     </div>
 
     <div class="confirm-steps">
-      1️⃣ Kartaga summani o'tkazing<br>
-      2️⃣ Chek skrinshotini quyidagi joyga yuklab oling<br>
-      3️⃣ <b>"Chekni yuborish"</b> tugmasini bosing<br>
-      4️⃣ Admin tasdiqlagach, balansingiz avtomatik to'ldiriladi ✅
+      1️⃣ Yuqoridagi kartaga aniq summani o'tkazing<br>
+      2️⃣ Pastdagi <b>"To'lov so'rovini yuborish"</b> tugmasini bosing<br>
+      3️⃣ Oyna yopilgach, chek rasmini <b>Bot chatiga yuboring</b> 📸<br>
+      4️⃣ Admin tasdiqlagach, balansingiz to'ldiriladi ✅
     </div>
 
-    <div class="upload-section">
-      <div class="upload-area" id="upload-area" onclick="document.getElementById('file-input').click()">
-        <div class="upload-icon">📸</div>
-        <div class="upload-text" id="upload-text-content">Chek rasmini tanlang<br><span>Bosing yoki suring</span></div>
-      </div>
-      <input type="file" id="file-input" accept="image/*" onchange="handleFile(this)" />
-      <img id="preview-img" class="preview-img" style="display:none;" />
-    </div>
-
-    <button class="send-check-btn" id="send-check-btn" onclick="sendCheck()" disabled>
-      📤 Chekni yuborish
+    <button class="send-check-btn" id="send-check-btn" onclick="sendTopupRequest()">
+      📤 To'lov so'rovini yuborish
     </button>
     <button class="cancel-btn2" onclick="closeTopupConfirm()">Bekor qilish</button>
   </div>
@@ -415,9 +350,7 @@ const urlParams = new URLSearchParams(window.location.search);
 let balance = parseInt(urlParams.get('balance') || '0');
 let userId = 0;
 let userName = 'Foydalanuvchi';
-let userUsername = null;
 let selectedProduct = null;
-let selectedFile = null;
 let topupAmount = 0;
 let starsAmount = 0;
 let isDark = true;
@@ -440,25 +373,20 @@ const avatarColors = ['#e74c3c','#e67e22','#27ae60','#2980b9','#8e44ad','#16a085
 
 function getAvatarColor(name) {
   let hash = 0;
-  for (let c of (name||'U')) hash = c.charCodeAt(0) + hash * 31;
+  for (let c of (name || 'U')) hash = c.charCodeAt(0) + hash * 31;
   return avatarColors[Math.abs(hash) % avatarColors.length];
 }
 
 function initUser() {
-  // Telegram WebApp'dan user info olish
-  // Agar initDataUnsafe ishlasa — foydalanish, bo'lmasa warning berish
+  // Telegram WebApp orqali foydalanuvchi ma'lumotlarini olish
   const user = tg.initDataUnsafe?.user;
   
   if (user) {
-    userId = user.id || 0;
-    userName = user.first_name || 'Foydalanuvchi';
-    userUsername = user.username || null;
+    userId = user.id;
+    userName = user.first_name + (user.last_name ? ' ' + user.last_name : '');
   } else {
-    // Agar Telegram ma'lumot yetmasa, test mode
     userId = Math.floor(Math.random() * 1000000);
-    userName = 'Test User';
-    userUsername = 'testuser';
-    console.warn("⚠️ Telegram initDataUnsafe yetmadi. Test mode");
+    userName = 'Test Foydalanuvchi';
   }
 
   const letter = userName.charAt(0).toUpperCase();
@@ -488,7 +416,7 @@ function showPage(page) {
 }
 
 function openModal(product) {
-  selectedProduct = product;
+  selectedProduct = { ...product }; // Asl obyekt buzilmasligi uchun nusxa olamiz
   starsAmount = 0;
   document.getElementById('modal-name').textContent = product.name;
   document.getElementById('modal-emoji').textContent = product.emoji;
@@ -511,22 +439,20 @@ function openModal(product) {
 function renderStarOptions() {
   const container = document.getElementById('stars-options');
   container.innerHTML = STAR_PACKS.map(p => `
-    <div class="stars-option" onclick="selectStars(${p.count}, ${p.price})">
-      ⭐ ${p.count}<br><span style="font-size:11px">${p.price} so'm</span>
+    <div class="stars-option" onclick="selectStars(this, ${p.count}, ${p.price})">
+      ⭐ ${p.count}<br><span style="font-size:11px">${p.price.toLocaleString()} so'm</span>
     </div>
   `).join('');
 }
 
-function selectStars(count, price) {
+function selectStars(element, count, price) {
   starsAmount = count;
   selectedProduct.price = price;
   
-  // Tanlangan optionni highlight qilish
   document.querySelectorAll('.stars-option').forEach(o => o.classList.remove('selected'));
-  event.target.closest('.stars-option').classList.add('selected');
+  element.classList.add('selected');
   
-  // Narxni yangilash
-  document.getElementById('modal-price').textContent = price + " so'm";
+  document.getElementById('modal-price').textContent = price.toLocaleString() + " so'm";
 }
 
 function closeModal() { document.getElementById('modal').classList.remove('active'); }
@@ -579,64 +505,35 @@ function showTopupConfirm() {
   document.getElementById('confirm-amount').textContent = topupAmount.toLocaleString() + " so'm";
   document.getElementById('confirm-code').textContent = code;
   document.getElementById('topup-confirm').classList.add('active');
-  
-  selectedFile = null;
-  document.getElementById('file-input').value = "";
-  document.getElementById('preview-img').style.display = 'none';
-  const uploadArea = document.getElementById('upload-area');
-  uploadArea.classList.remove('has-file');
-  uploadArea.innerHTML = '<div class="upload-icon">📸</div><div class="upload-text" id="upload-text-content">Chek rasmini tanlang<br><span>Bosing yoki suring</span></div>';
-  document.getElementById('send-check-btn').disabled = true;
 }
 
 function closeTopupConfirm() { document.getElementById('topup-confirm').classList.remove('active'); }
 
-function handleFile(input) {
-  const file = input.files[0];
-  if (!file) return;
-  selectedFile = file;
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    const img = document.getElementById('preview-img');
-    img.src = e.target.result;
-    img.style.display = 'block';
-    
-    const uploadArea = document.getElementById('upload-area');
-    uploadArea.classList.add('has-file');
-    uploadArea.innerHTML = '<div class="upload-icon">✅</div><div class="upload-text">Rasm muvaffaqiyatli tanlandi</div>';
-    document.getElementById('send-check-btn').disabled = false;
-  };
-  reader.readAsDataURL(file);
-}
-
-function sendCheck() {
-  if (!selectedFile) { showToast("Chek rasmini tanlang!"); return; }
-  
+function sendTopupRequest() {
   const code = document.getElementById('confirm-code').textContent;
-  showToast("⏳ Chek yuborilmoqda...");
-  document.getElementById('send-check-btn').disabled = true;
-
-  // Fayni base64'ga aylantirish va botga yuborish
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    const base64 = e.target.result.split(',')[1];
-    
-    tg.sendData(JSON.stringify({
-      action: 'topup_check_upload',
-      amount: topupAmount,
-      code: code,
-      photoBase64: base64,
-      fileName: selectedFile.name
-    }));
-    
-    closeTopupConfirm();
-    showToast('✅ Chek yuborildi! Admin tez orada tasdiqlaydi.');
-  };
-  reader.readAsDataURL(selectedFile);
+  
+  tg.sendData(JSON.stringify({
+    action: 'topup_request',
+    amount: topupAmount,
+    code: code
+  }));
+  
+  closeTopupConfirm();
 }
 
 function copyCard() {
-  navigator.clipboard.writeText('4916990334038194').then(() => showToast('Nusxalandi! ✅'));
+  const cardNum = '4916990334038194';
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(cardNum).then(() => showToast('Nusxalandi! ✅'));
+  } else {
+    const textArea = document.createElement("textarea");
+    textArea.value = cardNum;
+    document.body.appendChild(textArea);
+    textArea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textArea);
+    showToast('Nusxalandi! ✅');
+  }
 }
 
 function toggleTheme() {
