@@ -6,86 +6,77 @@
   <title>Mini App</title>
   <style>
     :root{
-      --bg:#0b1220; --card-bg:#111827; --card-bg2:#0f1724; --card-border:rgba(255,255,255,0.04);
-      --modal-bg:#0b1220; --accent: #ffd166; --accent-grad: linear-gradient(90deg,#ffd166,#ffb86b);
-      --accent2:#ffd166; --price-bg:#0f1724; --text:#cbd5e1; --text2:#fff;
-      --shadow: 0 6px 20px rgba(0,0,0,0.6);
+      --bg:#071021; --card-bg:#0f1724; --card-border:rgba(255,255,255,0.04);
+      --accent: #ffd166; --accent-grad: linear-gradient(90deg,#ffd166,#ffb86b);
+      --text:#cbd5e1; --text2:#fff; --shadow: 0 8px 28px rgba(0,0,0,0.6);
     }
-
+    *{box-sizing:border-box}
     body { margin:0; font-family: Inter, system-ui, sans-serif; background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
-    .topbar { display:flex; align-items:center; justify-content:space-between; padding:14px; }
+    .container { padding:14px; max-width:720px; margin:0 auto; }
+    .topbar { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:12px; }
     .user-info { display:flex; align-items:center; gap:10px; }
-    .avatar { width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; background:var(--card-bg); color:var(--text2); }
-    .username { font-size:14px; font-weight:700; color:var(--text2); text-transform:uppercase; }
-    .balance-info { font-size:13px; font-weight:800; color:#1a1200; background:var(--card-bg); padding:7px 12px; border-radius:12px; box-shadow:var(--shadow); }
+    .avatar { width:48px; height:48px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; background:var(--card-bg); color:var(--text2); font-size:18px; }
+    .username { font-size:15px; font-weight:700; color:var(--text2); text-transform:capitalize; }
+    .balance-info { font-size:13px; font-weight:800; color:#1a1200; background:linear-gradient(180deg,#0b1320,#0b1426); padding:8px 14px; border-radius:12px; box-shadow:var(--shadow); color:var(--text2); }
 
-    .topup-card-wrap { background: linear-gradient(160deg, var(--card-bg), var(--card-bg2)); border-radius:22px; padding:20px; margin:12px; border:1px solid var(--card-border); box-shadow:var(--shadow); }
-    .quick-amounts { display:flex; gap:8px; margin-top:10px; }
-    .quick-btn { padding:8px 10px; border-radius:12px; border:none; cursor:pointer; background:rgba(255,255,255,0.03); color:var(--text); }
+    .card { background: linear-gradient(160deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-radius:18px; padding:16px; margin-bottom:12px; border:1px solid var(--card-border); box-shadow:var(--shadow); }
+    .topup-label { font-size:14px; margin-bottom:8px; color:var(--text2); font-weight:700; }
+    .quick-amounts { display:flex; gap:8px; margin-top:6px; flex-wrap:wrap; }
+    .quick-btn { padding:10px 12px; border-radius:12px; border:none; cursor:pointer; background:rgba(255,255,255,0.03); color:var(--text); font-weight:700; }
+    .topup-btn { width:100%; margin-top:12px; padding:12px; border-radius:12px; border:none; cursor:pointer; background:var(--accent-grad); color:#071021; font-weight:800; box-shadow:0 6px 18px rgba(255,177,60,0.12); }
 
-    /* MODALS */
-    .modal-overlay, .topup-confirm { display:none; position:fixed; inset:0; background: rgba(5,5,20,0.88); z-index:200; align-items:flex-end; backdrop-filter: blur(3px); }
-    .modal-overlay.active, .topup-confirm.active { display:flex; }
-    .modal, .topup-confirm-box { background: var(--modal-bg); border-radius: 26px 26px 0 0; padding:22px 20px 40px; width:100%; border-top:1px solid var(--card-border); box-shadow:0 -10px 40px rgba(0,0,0,0.5); max-height:85vh; overflow-y:auto; }
+    .topup-info { margin-top:10px; font-size:13px; color:var(--text); opacity:0.9; }
 
-    .modal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
-    .modal-title { font-size:18px; font-weight:800; color:var(--text2); }
+    /* Bottom sheet */
+    .topup-confirm { display:none; position:fixed; inset:0; background: rgba(5,5,20,0.7); z-index:200; align-items:flex-end; justify-content:center; backdrop-filter: blur(4px); }
+    .topup-confirm.active { display:flex; }
+    .topup-confirm-box { background: linear-gradient(180deg,#071021,#071222); border-radius:18px 18px 6px 6px; padding:18px; width:100%; max-width:720px; margin:0 10px 10px; border:1px solid var(--card-border); box-shadow:0 -10px 40px rgba(0,0,0,0.6); color:var(--text); }
+    .confirm-title { font-size:16px; font-weight:800; color:var(--text2); margin-bottom:6px; }
+    .confirm-desc { font-size:13px; color:var(--text); margin-bottom:12px; }
+    .confirm-card { background:rgba(255,255,255,0.01); border-radius:12px; padding:10px; border:1px solid var(--card-border); margin-bottom:12px; font-size:14px; color:var(--text2); display:flex; justify-content:space-between; align-items:center; gap:8px; }
+    .copy-btn { padding:8px 10px; border-radius:10px; border:none; background:rgba(255,255,255,0.03); color:var(--text); cursor:pointer; }
 
-    .modal-buy-btn, .send-check-btn { width:100%; padding:15px; background:var(--accent-grad); border:none; border-radius:16px; color:#1a1200; font-size:16px; font-weight:800; cursor:pointer; font-family:inherit; margin-bottom:8px; }
-    .modal-cancel-btn, .cancel-btn2 { width:100%; padding:12px; background:transparent; border:none; color:var(--text); font-size:14px; cursor:pointer; font-family:inherit; opacity:0.7; }
+    .confirm-steps { background:rgba(255,255,255,0.01); border-radius:10px; padding:12px; margin-bottom:12px; font-size:13px; color:var(--text); line-height:1.5; border:1px solid var(--card-border); }
 
-    .stars-selector { margin-bottom:14px; }
-    .stars-options { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
-    .stars-option { padding:12px; border-radius:12px; background:var(--card-bg); border:1px solid var(--card-border); cursor:pointer; text-align:center; }
-    .stars-option.selected { background: var(--accent-grad); color:#1a1200; border-color:var(--accent); }
+    .send-check-btn { width:100%; padding:12px; background:var(--accent-grad); border:none; border-radius:12px; color:#071021; font-weight:800; cursor:pointer; margin-bottom:8px; }
+    .cancel-btn2 { width:100%; padding:10px; background:transparent; border:none; color:var(--text); font-size:14px; cursor:pointer; opacity:0.9; }
 
-    .confirm-title { font-size:18px; font-weight:800; color:var(--text2); margin-bottom:6px; }
-    .confirm-desc { font-size:13px; color:var(--text); opacity:0.85; margin-bottom:16px; line-height:1.6; }
-    .confirm-card { background:var(--price-bg); border-radius:14px; padding:14px 16px; margin-bottom:18px; border:1px solid var(--card-border); }
+    .file-row { display:flex; gap:8px; align-items:center; margin-top:10px; }
+    input[type=file] { display:block; }
 
-    .confirm-steps { background:var(--card-bg); border-radius:14px; padding:14px 16px; margin-bottom:18px; font-size:13px; line-height:1.8; border:1px solid var(--card-border); }
+    .toast { position:fixed; bottom:110px; left:50%; transform:translateX(-50%); background:#111; color:#fff; padding:10px 14px; border-radius:12px; box-shadow:var(--shadow); display:none; z-index:400; }
 
-    .toast { position:fixed; bottom:90px; left:50%; transform:translateX(-50%); background:#111; color:#fff; padding:10px 14px; border-radius:12px; box-shadow:var(--shadow); display:none; z-index:400; }
+    @media(min-width:720px){
+      .container{padding:24px}
+      .topup-confirm-box{margin-bottom:30px}
+    }
   </style>
 </head>
 <body>
-  <div class="topbar">
-    <div class="user-info">
-      <div class="avatar" id="avatar">?</div>
-      <div class="username" id="username">Yuklanmoqda...</div>
-    </div>
-    <div class="balance-info">
-      <span class="balance-amount" id="balance-display">0</span>
-    </div>
-  </div>
-
-  <div class="topup-card-wrap">
-    <div class="topup-label">To'lov miqdorini tanlang</div>
-    <div class="quick-amounts">
-      <button class="quick-btn" onclick="setAmount(200000)">200 000</button>
-      <button class="quick-btn" onclick="setAmount(500000)">500 000</button>
-    </div>
-    <button class="topup-btn" onclick="showTopupConfirm()">💳 To'lov qilish</button>
-    <div class="topup-info">Kartaga pul o'tkazib so'rov yuboring, keyin chek rasmini bot chatiga yuboring. Admin tasdiqlagach, balans to'ldiriladi.</div>
-  </div>
-
-  <!-- Modal (example primary modal) -->
-  <div class="modal-overlay" id="modal-overlay">
-    <div class="modal" id="modal">
-      <div class="modal-header">
+  <div class="container">
+    <div class="topbar">
+      <div class="user-info">
+        <div class="avatar" id="avatar">?</div>
         <div>
-          <div id="modal-emoji">✨</div>
-          <div id="modal-name" class="modal-title">Mahsulot</div>
+          <div class="username" id="username">Yuklanmoqda...</div>
+          <div style="font-size:12px;color:var(--text);opacity:0.9" id="usernick">-</div>
         </div>
-        <button class="modal-cancel-btn" onclick="closeModal()">✖</button>
       </div>
-      <div id="modal-desc">Ta'rif</div>
-      <div id="modal-price">0 so'm</div>
-      <div class="stars-selector" id="stars-selector" style="display:none;">
-        <div class="topup-label">Nechta Stars xarid qilmoqchisiz?</div>
-        <div class="stars-options" id="stars-options"></div>
+      <div class="balance-info">
+        <div style="font-size:12px">Balans</div>
+        <div class="balance-amount" id="balance-display">0 so'm</div>
       </div>
-      <button class="modal-buy-btn" onclick="buyProduct()">Buy</button>
+    </div>
+
+    <div class="card">
+      <div class="topup-label">To'lov miqdorini tanlang</div>
+      <div class="quick-amounts">
+        <button class="quick-btn" onclick="setAmount(200000)">200 000</button>
+        <button class="quick-btn" onclick="setAmount(500000)">500 000</button>
+        <button class="quick-btn" onclick="setAmount(1000000)">1 000 000</button>
+      </div>
+      <button class="topup-btn" onclick="showTopupConfirm()">💳 To'lov qilish</button>
+      <div class="topup-info">Kartaga pul o'tkazib so'rov yuboring, keyin chek rasmini bot chatiga yuboring yoki pastdagi formadan yuklang. Admin tasdiqlagach, balans to'ldiriladi.</div>
     </div>
   </div>
 
@@ -93,27 +84,32 @@
   <div class="topup-confirm" id="topup-confirm">
     <div class="topup-confirm-box">
       <div class="confirm-title">💳 To'lov ma'lumotlari</div>
-      <div class="confirm-desc">Kartaga pul o'tkazib, so'rovni tasdiqlang:</div>
+      <div class="confirm-desc">Kartaga pul o'tkazib, so'rovni tasdiqlang yoki chekni yuklang va yuboring:</div>
       <div class="confirm-card">
-        <div class="confirm-row">
-          <span class="lbl">Karta:</span>
-          <span class="val" id="confirm-cardnum">4916 9903 3403 8194</span>
+        <div style="flex:1">
+          <div style="font-size:12px;opacity:0.8">Karta</div>
+          <div id="confirm-cardnum">4916 9903 3403 8194</div>
         </div>
-        <div style="margin-top:8px;">
-          <button onclick="copyCard()">Karta raqamini nusxalash</button>
+        <div>
+          <button class="copy-btn" onclick="copyCard()">Kopiya</button>
         </div>
       </div>
 
       <div class="confirm-steps">
-        1️⃣ Yuqoridagi kartaga aniq summani o'tkazing<br>
-        2️⃣ Pastdagi <b>"To'lov so'rovini yuborish"</b> tugmasini bosing<br>
-        3️⃣ Oyna yopilgach, chek rasmini <b>Bot chatiga yuboring</b> 📸<br>
-        4️⃣ Admin tasdiqlagach, balansingiz to'ldiriladi ✅
+        1) Yuqoridagi kartaga aniq summani o'tkazing.<br>
+        2) Kattalikni tasdiqlang — kod yaratiladi yoki chekni yuklang.<br>
+        3) "To'lovni yuborish" tugmasi yordamida botga yuboring.<br>
+        4) Admin tasdiqlagach balansingiz yangilanadi.
       </div>
 
-      <div class="confirm-row" style="margin-bottom:12px;">
-        <div>Summangiz: <b id="confirm-amount">0</b></div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <div style="flex:1">Summangiz: <b id="confirm-amount">0 so'm</b></div>
         <div>Kod: <b id="confirm-code">-</b></div>
+      </div>
+
+      <div class="file-row">
+        <input id="check-file" type="file" accept="image/*" />
+        <button class="copy-btn" onclick="attachFile()">Yuklash</button>
       </div>
 
       <button class="send-check-btn" id="send-check-btn" onclick="sendTopupRequest()">📤 To'lov so'rovini yuborish</button>
@@ -124,31 +120,42 @@
   <div id="toast" class="toast"></div>
 
   <script>
-    // Sample constants and helpers
+    // Detect Telegram WebApp object reliably
+    const tg = (window.Telegram && window.Telegram.WebApp) || window.TelegramWebviewProxy || window.Telegram || window.tg || { initDataUnsafe: null, sendData: (d)=>console.log("tg.sendData",d) };
+    try { if (tg && tg.init) tg.init(); } catch(e){/* ignore */ }
+
+    // State
     const urlParams = new URLSearchParams(window.location.search || '');
     let balance = parseInt(urlParams.get('balance') || '0');
     let userId = 0;
     let userName = 'Foydalanuvchi';
-    let selectedProduct = null;
+    let userNick = '';
     let topupAmount = 0;
-    let starsAmount = 0;
-    let isDark = true;
+    let pendingFileBase64 = null;
 
-    // Sample STAR_PACKS so JS won't break (replace with real data)
-    const STAR_PACKS = [
-      { count: 10, price: 10000 },
-      { count: 25, price: 20000 }
-    ];
+    // Initialize user view (from Telegram WebApp init data if available)
+    function initUser() {
+      const u = tg.initDataUnsafe?.user || null;
+      if (u) {
+        userId = u.id || 0;
+        userName = (u.first_name || '') + (u.last_name ? ' ' + u.last_name : '');
+        userNick = u.username ? '@' + u.username : '-';
+      } else {
+        userId = Math.floor(Math.random() * 1000000);
+        userName = 'Test Foydalanuvchi';
+        userNick = '-';
+      }
+      document.getElementById('avatar').textContent = (userName.charAt(0) || '?').toUpperCase();
+      document.getElementById('username').textContent = userName || 'Foydalanuvchi';
+      document.getElementById('usernick').textContent = userNick;
+      document.getElementById('balance-display').textContent = (balance || 0).toLocaleString() + " so'm";
+    }
 
-    // Telegram WebApp object may exist in the environment
-    const tg = window.TelegramWebviewProxy || window.Telegram || (window as any).tg || { initDataUnsafe: null, sendData: (d)=>console.log("tg.sendData",d) };
-
-    function showToast(text, timeout = 3000) {
+    function showToast(text, timeout=3000){
       const t = document.getElementById('toast');
-      if (!t) return;
       t.textContent = text;
       t.style.display = 'block';
-      setTimeout(()=> t.style.display = 'none', timeout);
+      setTimeout(()=> t.style.display='none', timeout);
     }
 
     function setAmount(a){
@@ -158,129 +165,87 @@
     }
 
     function generateCode(){
-      // Simple code generator for confirmation (replace with server-provided code if needed)
-      const code = 'TX' + Math.floor(10000 + Math.random()*89999);
-      return code;
-    }
-
-    function initUser() {
-      // Telegram WebApp orqali foydalanuvchi ma'lumotlarini olish
-      const user = tg.initDataUnsafe?.user;
-      if (user) {
-        userId = user.id;
-        userName = (user.first_name || '') + (user.last_name ? ' ' + user.last_name : '');
-      } else {
-        // Test fallback
-        userId = Math.floor(Math.random() * 1000000);
-        userName = 'Test Foydalanuvchi';
-      }
-      const letter = userName.charAt(0).toUpperCase() || '?';
-      const avatar = document.getElementById('avatar');
-      const usernameEl = document.getElementById('username');
-      if (avatar) avatar.textContent = letter;
-      if (usernameEl) usernameEl.textContent = userName;
-    }
-
-    function openModal(product){
-      selectedProduct = { ...product }; // copy to avoid mutating original
-      starsAmount = 0;
-      document.getElementById('modal-name').textContent = product.name || 'Mahsulot';
-      document.getElementById('modal-emoji').textContent = product.emoji || '✨';
-      document.getElementById('modal-price').textContent = (product.price || 0).toLocaleString() + " so'm";
-      document.getElementById('modal-overlay').classList.add('active');
-      // Show stars selector if applicable
-      const ss = document.getElementById('stars-selector');
-      if (STAR_PACKS && STAR_PACKS.length && ss) {
-        ss.style.display = 'block';
-        renderStarOptions();
-      }
-    }
-
-    function closeModal(){
-      document.getElementById('modal-overlay').classList.remove('active');
-    }
-
-    function renderStarOptions(){
-      const container = document.getElementById('stars-options');
-      if (!container) return;
-      container.innerHTML = STAR_PACKS.map(p => `
-        <div class="stars-option" onclick="selectStars(this, ${p.count}, ${p.price})">
-          ⭐ ${p.count}<br><span style="font-size:11px">${p.price.toLocaleString()} so'm</span>
-        </div>
-      `).join('');
-    }
-
-    function selectStars(element, count, price){
-      starsAmount = count;
-      if (!selectedProduct) selectedProduct = {};
-      selectedProduct.price = price;
-      document.querySelectorAll('.stars-option').forEach(o => o.classList.remove('selected'));
-      if (element && element.classList) element.classList.add('selected');
-      document.getElementById('modal-price').textContent = price.toLocaleString() + " so'm";
+      return 'TX' + Math.floor(10000 + Math.random()*89999);
     }
 
     function showTopupConfirm(){
-      document.getElementById('confirm-amount').textContent = topupAmount.toLocaleString() + " so'm";
-      document.getElementById('confirm-code').textContent = generateCode();
+      if (!topupAmount) setAmount(200000);
       document.getElementById('topup-confirm').classList.add('active');
+      // ensure code visible
+      document.getElementById('confirm-code').textContent = document.getElementById('confirm-code').textContent || generateCode();
     }
 
     function closeTopupConfirm(){
       document.getElementById('topup-confirm').classList.remove('active');
     }
 
+    function copyCard(){
+      const cardNum = document.getElementById('confirm-cardnum').textContent.trim();
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(cardNum).then(()=> showToast('Nusxalandi! ✅'), ()=> showToast('Clipboardga yozib bo‘lmadi'));
+      } else {
+        const textArea = document.createElement("textarea");
+        textArea.value = cardNum;
+        document.body.appendChild(textArea);
+        textArea.select();
+        try { document.execCommand('copy'); showToast('Nusxalandi! ✅'); } catch(e){ showToast('Clipboardga yozib bo‘lmadi'); }
+        document.body.removeChild(textArea);
+      }
+    }
+
+    // Attach file -> read base64 (for sending to bot)
+    function attachFile(){
+      const input = document.getElementById('check-file');
+      if (!input || !input.files || !input.files[0]) {
+        showToast('Iltimos, fayl tanlang');
+        return;
+      }
+      const file = input.files[0];
+      const reader = new FileReader();
+      reader.onload = () => {
+        const res = reader.result || '';
+        // result includes "data:image/...;base64,...."
+        pendingFileBase64 = (typeof res === 'string' ? res.split(',')[1] : null);
+        showToast('Chek yuklandi (tayyor). Endi yuboring.');
+      };
+      reader.onerror = ()=> showToast('Faylni o‘qishda xatolik');
+      reader.readAsDataURL(file);
+    }
+
+    // send topup request: either with attached base64 or without (user will send photo separately)
     function sendTopupRequest(){
-      const code = document.getElementById('confirm-code')?.textContent || '';
-      // send structured request to bot/backend via Telegram WebApp or other channel
+      const code = document.getElementById('confirm-code').textContent || generateCode();
+      const payload = { action: 'topup_request', amount: topupAmount, code };
+      // if we have a base64 photo, send as topup_check_upload to send photo immediately
+      if (pendingFileBase64) {
+        payload.action = 'topup_check_upload';
+        payload.photoBase64 = pendingFileBase64;
+      }
       try {
-        tg.sendData(JSON.stringify({
-          action: 'topup_request',
-          amount: topupAmount,
-          code: code
-        }));
+        if (tg && tg.sendData) {
+          tg.sendData(JSON.stringify(payload));
+        } else {
+          console.log('tg.sendData', payload);
+        }
         closeTopupConfirm();
         showToast('✅ So‘rov yuborildi. Admin tasdiqlagach balansingiz yangilanadi.');
+        // reset pending file
+        pendingFileBase64 = null;
       } catch (e) {
         console.error(e);
         showToast('Yuborishda xatolik yuz berdi.');
       }
     }
 
-    function copyCard(){
-      const cardNum = '4916990334038194';
-      if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(cardNum).then(()=> showToast('Nusxalandi! ✅'), ()=> showToast('Clipboardga yozib bo‘lmadi'));
-      } else {
-        // fallback
-        const textArea = document.createElement("textarea");
-        textArea.value = cardNum;
-        document.body.appendChild(textArea);
-        textArea.select();
-        try {
-          document.execCommand('copy');
-          showToast('Nusxalandi! ✅');
-        } catch(e){
-          showToast('Clipboardga yozib bo‘lmadi');
-        }
-        document.body.removeChild(textArea);
-      }
-    }
-
-    function toggleTheme(){
-      isDark = !isDark;
-      // implement theme toggling if needed
-      showToast('Theme toggled');
-    }
-
+    // small buy placeholder (for demo in WebApp)
     function buyProduct(){
       showToast('Buy flow not implemented in this demo');
     }
 
-    // init on load
+    // Init on load
     document.addEventListener('DOMContentLoaded', ()=> {
       initUser();
-      // Initialize default amounts if any
-      setAmount(200000);
+      setAmount(balance || 200000);
     });
   </script>
 </body>
